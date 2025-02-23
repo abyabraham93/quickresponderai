@@ -1,0 +1,94 @@
+{
+    "fbf0feec-356b-461b-8738-3b1f44edaf02": {
+        "id": "5824439a-4abf-40c1-85a5-ae380a3b398e",
+        "name": "Google GTM",
+        "designId": "b7dbc394-55f6-4b91-8022-c91ff42d1223",
+        "pluginId": "fbf0feec-356b-461b-8738-3b1f44edaf02",
+        "publicData": {
+            "containerIdProd": "GTM-TBK3ZVGZ",
+            "containerIdEditor": "GTM-TBK3ZVGZ",
+            "containerIdStaging": "GTM-TBK3ZVGZ"
+        }
+    },
+    "9c40819b-4a8f-468f-9ba5-4b9699f3361f": {
+        "id": "bcd02079-12be-409c-9299-233755c1dae0",
+        "name": "Charts",
+        "designId": "b7dbc394-55f6-4b91-8022-c91ff42d1223",
+        "pluginId": "9c40819b-4a8f-468f-9ba5-4b9699f3361f",
+        "publicData": {}
+    },
+    "832d6f7a-42c3-43f1-a3ce-9a678272f811": {
+        "id": "43c2b22d-08ea-4568-9cee-11852373b30c",
+        "name": "Date",
+        "designId": "b7dbc394-55f6-4b91-8022-c91ff42d1223",
+        "pluginId": "832d6f7a-42c3-43f1-a3ce-9a678272f811",
+        "publicData": {}
+    },
+    "2bd1c688-31c5-443e-ae25-59aa5b6431fb": {
+        "id": "ab6b8e13-802c-4a46-821b-20440c10d856",
+        "name": "REST API",
+        "designId": "b7dbc394-55f6-4b91-8022-c91ff42d1223",
+        "pluginId": "2bd1c688-31c5-443e-ae25-59aa5b6431fb",
+        "publicData": {}
+    },
+    "cd33cf33-e29f-4e8c-ac26-b997fe507ce7": {
+        "id": "5e95dfca-4fd3-4e68-a966-e964d9d50ff4",
+        "name": "Xano",
+        "designId": "b7dbc394-55f6-4b91-8022-c91ff42d1223",
+        "pluginId": "cd33cf33-e29f-4e8c-ac26-b997fe507ce7",
+        "publicData": {
+            "domain": "xhnc-0w56-uaxb.n7c.xano.io",
+            "customDomain": "qrapi.quickresponderai.com"
+        }
+    },
+    "36816525-6e0d-4217-b792-19f5d8682c46": {
+        "id": "777c297f-324f-4a5c-8dff-14de8229095a",
+        "name": "GraphQL",
+        "designId": "b7dbc394-55f6-4b91-8022-c91ff42d1223",
+        "pluginId": "36816525-6e0d-4217-b792-19f5d8682c46",
+        "publicData": {}
+    },
+    "f5856798-485d-47be-b433-d43d771c64e1": {
+        "id": "2a5c5a50-3ddd-45de-9bbd-e29887c9365e",
+        "name": "Xano Auth",
+        "designId": "b7dbc394-55f6-4b91-8022-c91ff42d1223",
+        "pluginId": "f5856798-485d-47be-b433-d43d771c64e1",
+        "publicData": {
+            "roles": [
+                {
+                    "id": "1ceb0a0d-4268-4bce-9a3a-75488301e16f",
+                    "name": "superadmin",
+                    "createdAt": "2024-02-06T17:37:14.449Z"
+                },
+                {
+                    "id": "24d0cf75-07dc-4425-8711-6e1e118a9e9d",
+                    "name": "admin",
+                    "createdAt": {
+                        "id": "24d0cf75-07dc-4425-8711-6e1e118a9e9d",
+                        "name": "admin",
+                        "createdAt": "2024-02-23T13:13:05.601Z"
+                    }
+                },
+                {
+                    "id": "57fded97-4193-4f94-8ed2-f6d83272dfbd",
+                    "name": "agency",
+                    "createdAt": "2024-02-23T13:19:13.991Z"
+                },
+                {
+                    "id": "d077bc3e-1b1b-4a76-9ca6-faa90046e3c4",
+                    "name": "subaccount",
+                    "createdAt": "2024-02-23T13:19:27.742Z"
+                }
+            ],
+            "domain": "xhnc-0w56-uaxb.n7c.xano.io",
+            "roleKey": "role",
+            "roleType": "string",
+            "customDomain": "qrapi.quickresponderai.com",
+            "getMeEndpoint": "https://xhnc-0w56-uaxb.n7c.xano.io/api:rZNIYJk9/auth/me",
+            "loginEndpoint": "https://xhnc-0w56-uaxb.n7c.xano.io/api:rZNIYJk9/auth/login",
+            "signupEndpoint": "https://xhnc-0w56-uaxb.n7c.xano.io/api:rZNIYJk9/auth/signup",
+            "socialProviders": {},
+            "afterNotSignInPageId": "2ce1609f-53d6-4aee-9d1d-3a2f9cc2fc0f"
+        }
+    }
+}
