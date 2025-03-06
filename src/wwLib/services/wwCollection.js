@@ -130,7 +130,8 @@ export default {
                 }
                 newCollectionInfo.data = newData;
             }
-             const collection = {
+
+            const collection = {
                 ...currentCollectionInfo,
                 ...newCollectionInfo,
             };
@@ -249,7 +250,7 @@ export default {
      * @DEPRECATED
      */
     getCollectionData(...args) {
-         wwLib.wwLog.warn(
+        wwLib.wwLog.warn(
             'wwLib.wwCollection.getCollectionData is DEPRECATED, use wwLib.wwUtils.getDataFromCollection instead.'
         );
         return wwLib.wwUtils.getDataFromCollection(...args);

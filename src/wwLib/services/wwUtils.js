@@ -7,7 +7,7 @@ export default {
      * @DEPRECATED wwLib.wwUtils.getUid
      */
     getUniqueId() {
-         wwLib.wwLog.warn('wwLib.wwUtils.getUniqueId is deprecated, use wwLib.wwLib.getUid instead');
+        wwLib.wwLog.warn('wwLib.wwUtils.getUniqueId is deprecated, use wwLib.wwLib.getUid instead');
         var d = new Date();
         return Math.floor((d.getTime() * Math.random() + Math.random() * 10000 + Math.random() * 100) / 100);
     },
@@ -200,7 +200,7 @@ export default {
      * @DEPRECATED wwLib.wwApp.addScriptToHead
      */
     addScriptToHead(options, allowMultipleAdd = false) {
-         wwLib.wwLog.warn('wwUtils.addScriptToHead is deprecated, use wwLib.wwApp.addScriptToHead instead');
+        wwLib.wwLog.warn('wwUtils.addScriptToHead is deprecated, use wwLib.wwApp.addScriptToHead instead');
         const attributes = {
             ...(options.async ? { async: options.async } : {}),
             ...(options.charset ? { defer: options.charset } : {}),
@@ -215,7 +215,7 @@ export default {
      * @DEPRECATED wwLib.wwApp.scrollIntoView
      */
     scrollIntoView(element, offset = 0) {
-         wwLib.wwLog.warn('wwUtils.scrollIntoView is deprecated, use wwLib.wwApp.scrollIntoView instead');
+        wwLib.wwLog.warn('wwUtils.scrollIntoView is deprecated, use wwLib.wwApp.scrollIntoView instead');
         wwLib.wwApp.scrollIntoView(element, { offset, behavior: 'smooth' });
     },
 

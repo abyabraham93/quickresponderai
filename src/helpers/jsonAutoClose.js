@@ -14,8 +14,25 @@ import { jsonrepair } from 'jsonrepair';
  */
 export function parsePartialJson(partialJson) {
     try {
+        return JSON.parse(partialJson);
+    } catch (error) {
+        //Try to remove an unexpected char. This can be the fault of css animations.
+        const matches = error?.message?.match(/position\s([\d]*)\s\(/);
+        if (matches?.[1]) {
+            const position = parseInt(matches[1]);
+
+            try {
+                return JSON.parse(partialJson.slice(0, position - 1) + partialJson.slice(position));
+            } catch (error) {}
+        }
+    }
+    try {
         return parse(partialJson, OBJ | ARR | BOOL | NULL);
     } catch (error) {
-        return jsonrepair(partialJson);
+        // We don't want to support partial strings
+        if (partialJson.startsWith('"') && !partialJson.endsWith('"')) {
+            throw error;
+        }
     }
+    return JSON.parse(jsonrepair(partialJson));
 }

@@ -192,7 +192,7 @@ export function useComponentTriggerEvent(
 
         // Launch all workflows in parallel
         workflows.forEach(workflow => {
-             executeWorkflow(workflow, {
+            executeWorkflow(workflow, {
                 context,
                 event,
                 executionContext: {
@@ -319,7 +319,7 @@ export function useLibraryComponentWorkflow({ baseUid, componentIdentifier }, co
         ).filter(({ trigger, triggerProperty }) => trigger === name && (!property || property === triggerProperty));
         // Launch all workflows in parallel
         workflows.forEach(workflow => {
-             executeWorkflow(workflow, {
+            executeWorkflow(workflow, {
                 context,
                 event,
                 internal: true,

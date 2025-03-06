@@ -1,6 +1,6 @@
 import { computed, unref } from 'vue';
 import get from 'lodash.get';
- 
+
 const allScreenMedia = computed(() => getAllScreenMedia());
 const currentActiveScreens = computed(() => {
     const screenSize = wwLib.$store.getters['front/getScreenSize'];

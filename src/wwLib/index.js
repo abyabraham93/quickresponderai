@@ -252,7 +252,7 @@ wwLib.wwPluginHelper.registerPlugin('plugin-9c40819b-4a8f-468f-9ba5-4b9699f3361f
      * @DEPRECATED wwLib.wwApp.goTo
      */
     goTo(...args) {
-         wwLib.wwLog.warn('wwLib.goTo is DEPRECATED, use wwLib.wwApp.goTo instead');
+        wwLib.wwLog.warn('wwLib.goTo is DEPRECATED, use wwLib.wwApp.goTo instead');
         wwLib.wwApp.goTo(...args);
     },
 
@@ -261,7 +261,7 @@ wwLib.wwPluginHelper.registerPlugin('plugin-9c40819b-4a8f-468f-9ba5-4b9699f3361f
      * @DEPRECATED wwLib.wwUtils.getStyleFromToken
      */
     getStyleFromToken(...args) {
-         // wwLib.wwLog.warn('wwLib.getStyleFromToken is DEPRECATED, use wwLib.wwUtils.getStyleFromToken instead');
+        // wwLib.wwLog.warn('wwLib.getStyleFromToken is DEPRECATED, use wwLib.wwUtils.getStyleFromToken instead');
         return wwLib.wwUtils.getStyleFromToken(...args);
     },
 
@@ -270,7 +270,7 @@ wwLib.wwPluginHelper.registerPlugin('plugin-9c40819b-4a8f-468f-9ba5-4b9699f3361f
      * @DEPRECATED wwLib.wwUtils.getTypoFromToken
      */
     getTypoFromToken(...args) {
-         // wwLib.wwLog.warn('wwLib.getTypoFromToken is DEPRECATED, use wwLib.wwUtils.getTypoFromToken instead');
+        // wwLib.wwLog.warn('wwLib.getTypoFromToken is DEPRECATED, use wwLib.wwUtils.getTypoFromToken instead');
         return wwLib.wwUtils.getTypoFromToken(...args);
     },
 
@@ -279,7 +279,7 @@ wwLib.wwPluginHelper.registerPlugin('plugin-9c40819b-4a8f-468f-9ba5-4b9699f3361f
      * @DEPRECATED
      */
     element(value) {
-         wwLib.wwLog.warn('wwLib.element is DEPRECATED');
+        wwLib.wwLog.warn('wwLib.element is DEPRECATED');
         if (typeof value === 'object') {
             return { isWwObject: true, ...value };
         } else {
@@ -292,7 +292,7 @@ wwLib.wwPluginHelper.registerPlugin('plugin-9c40819b-4a8f-468f-9ba5-4b9699f3361f
      * @DEPRECATED wwLib.wwUtils.resolveObjectPropertyPath
      */
     resolveObjectPropertyPath(...args) {
-         // wwLib.wwLog.warn(
+        // wwLib.wwLog.warn(
         //     'wwLib.resolveObjectPropertyPath is DEPRECATED, use wwLib.wwUtils.resolveObjectPropertyPath instead'
         // );
         return wwLib.wwUtils.resolveObjectPropertyPath(...args);
@@ -303,7 +303,7 @@ wwLib.wwPluginHelper.registerPlugin('plugin-9c40819b-4a8f-468f-9ba5-4b9699f3361f
      * @DEPRECATED wwLib.wwutils.getTextStyleFromContent
      */
     getTextStyleFromContent(...args) {
-         // wwLib.wwLog.warn(
+        // wwLib.wwLog.warn(
         //     'wwLib.getTextStyleFromContent is DEPRECATED, use wwLib.wwUtils.getTextStyleFromContent instead'
         // );
         return wwLib.wwUtils.getTextStyleFromContent(...args);
@@ -314,7 +314,7 @@ wwLib.wwPluginHelper.registerPlugin('plugin-9c40819b-4a8f-468f-9ba5-4b9699f3361f
      * @DEPRECATED wwLib.wwWorkflow.executeGlobal
      */
     async executeWorkflow(...args) {
-         wwLib.wwLog.warn('wwLib.executeWorkflow is DEPRECATED, use wwLib.wwWorkflow.executeGlobal instead');
+        wwLib.wwLog.warn('wwLib.executeWorkflow is DEPRECATED, use wwLib.wwWorkflow.executeGlobal instead');
         return wwLib.wwWorkflow.executeGlobal(...args);
     },
 
@@ -324,7 +324,7 @@ wwLib.wwPluginHelper.registerPlugin('plugin-9c40819b-4a8f-468f-9ba5-4b9699f3361f
      * @DEPRECATED wwLib.wwEditor.findParentUidByFlag
      */
     findParentUidByFlag(...args) {
-         wwLib.wwLog.warn('wwLib.wwEditor.findParentUidByFlag is DEPRECATED, use wwLib.findParentUidByFlag instead');
+        wwLib.wwLog.warn('wwLib.wwEditor.findParentUidByFlag is DEPRECATED, use wwLib.findParentUidByFlag instead');
         return wwLib.wwEditor.findParentUidByFlag(...args);
     },
 
@@ -334,7 +334,7 @@ wwLib.wwPluginHelper.registerPlugin('plugin-9c40819b-4a8f-468f-9ba5-4b9699f3361f
      * @DEPRECATED wwLib.wwEditor.selectParentByFlag
      */
     selectParentByFlag(...args) {
-         wwLib.wwLog.warn('wwLib.wwEditor.selectParentByFlag is DEPRECATED, use wwLib.selectParentByFlag instead');
+        wwLib.wwLog.warn('wwLib.wwEditor.selectParentByFlag is DEPRECATED, use wwLib.selectParentByFlag instead');
         return wwLib.wwEditor.selectParentByFlag(...args);
     },
 
@@ -343,7 +343,7 @@ wwLib.wwPluginHelper.registerPlugin('plugin-9c40819b-4a8f-468f-9ba5-4b9699f3361f
      * @DEPRECATED wwLib.wwElement.useCreate
      */
     useCreateElement() {
-         wwLib.wwLog.warn('wwLib.useCreateElement is DEPRECATED, use wwLib.wwElement.useCreate instead');
+        wwLib.wwLog.warn('wwLib.useCreateElement is DEPRECATED, use wwLib.wwElement.useCreate instead');
         return this.wwElement.useCreate();
     },
 
@@ -352,7 +352,7 @@ wwLib.wwPluginHelper.registerPlugin('plugin-9c40819b-4a8f-468f-9ba5-4b9699f3361f
      * @DEPRECATED wwLib.wwElement.useLayoutStyle
      */
     useLayoutStyle() {
-         wwLib.wwLog.warn('wwLib.useLayoutStyle is DEPRECATED, use wwLib.wwElement.useLayoutStyle instead');
+        wwLib.wwLog.warn('wwLib.useLayoutStyle is DEPRECATED, use wwLib.wwElement.useLayoutStyle instead');
         return wwLib.wwElement.useLayoutStyle();
     },
 };
