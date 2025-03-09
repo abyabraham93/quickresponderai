@@ -1,0 +1,31 @@
+export default {
+  editor: {
+    label: {
+      en: "Vapi Caller",
+    },
+  },
+  properties: {
+    textColor: {
+      label: {
+        en: "Text color",
+      },
+      type: "Color",
+      defaultValue: "#F23636",
+    },
+    providerId: {
+      label: {
+        en: "Provider ID",
+      },
+      type: "Text",
+      section: "settings",
+      bindable: true,
+      defaultValue: "deepgram",
+      /* wwEditor:start */
+      bindingValidation: {
+        type: "string",
+        tooltip: "A string that represents the provider ID: e.g. 'deepgram', 'openai', etc.",
+      },
+      /* wwEditor:end */
+    },
+  },
+};

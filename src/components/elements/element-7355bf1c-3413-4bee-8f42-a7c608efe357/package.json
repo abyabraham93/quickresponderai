@@ -1,0 +1,1 @@
+{"name":"weweb-vapiCaller","version":"0.0.1","scripts":{"build":"weweb build","serve":"weweb serve"},"devDependencies":{},"dependencies":{"@vapi-ai/web":"^2.2.2"}}
