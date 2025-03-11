@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { mapGetters, useStore } from 'vuex';
 import wwPageLoadProgress from '@/_front/components/wwPageLoadProgress';
 import { getBackgroundStyle } from '@/_front/helpers/wwBackgroungStyle';
@@ -41,7 +41,7 @@ import { useHead } from '@vueuse/head';
 export default {
     components: {
         wwPageLoadProgress,
-    },
+     },
     setup() {
         const store = useStore();
         const page = computed(() => store.getters['websiteData/getPage'] || { id: null, meta: {} });
@@ -189,4 +189,4 @@ html {
     opacity: 0;
     transform: scale(0.95);
 }
-</style>
+ </style>

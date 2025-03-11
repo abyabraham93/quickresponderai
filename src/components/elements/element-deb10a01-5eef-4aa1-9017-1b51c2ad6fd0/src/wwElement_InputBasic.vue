@@ -65,6 +65,7 @@ export default {
             focusInput,
             selectInput,
             onBlur,
+            setValue,
         } = useInput(props, emit);
 
         const useForm = inject('_wwForm:useForm', () => {});
@@ -76,8 +77,8 @@ export default {
 
         useForm(
             variableValue,
-            { fieldName, validation, customValidation, required },
-            { elementState: props.wwElementState, emit, sidepanelFormPath: 'form' }
+            { fieldName, validation, customValidation, required, initialValue: computed(() => props.content.value) },
+            { elementState: props.wwElementState, emit, sidepanelFormPath: 'form', setValue }
         );
 
         const inputBindings = computed(() => ({
@@ -94,6 +95,7 @@ export default {
             min: min.value,
             max: max.value,
             step: stepAttribute.value,
+            'data-ksdjgflkfdgjlkdkfgjfdkljgklfdjglkfdjgklfdjglkfdjglkfdjglkfdjglkdf': variableValue.value,
         }));
 
         const textareaBindings = computed(() => ({
