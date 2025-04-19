@@ -1,5 +1,5 @@
  
-import cloneDeep from 'lodash.clonedeep';
+import { cloneDeep } from 'lodash';
 import { useVariablesStore } from '@/pinia/variables.js';
 
  

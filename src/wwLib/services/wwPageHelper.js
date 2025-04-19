@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import getKeyValue from 'lodash.get';
+import { getKeyValue } from 'lodash';
 
 export default {
     /**

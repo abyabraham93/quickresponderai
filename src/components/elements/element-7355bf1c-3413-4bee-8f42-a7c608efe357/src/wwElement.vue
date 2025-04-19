@@ -150,10 +150,104 @@ export default {
 
     // Create methods that will be used both by the template and external actions
     const methods = {
+      detectDevice() {
+        const userAgent = navigator.userAgent.toLowerCase();
+        if (/iphone|ipad|ipod/.test(userAgent)) return 'ios';
+        if (/android/.test(userAgent)) return 'android';
+        return 'desktop';
+      },
+
+      getDeviceSpecificInstructions() {
+        const device = this.detectDevice();
+        switch (device) {
+          case 'ios':
+            return 'iPhone/iPad Instructions:\n' +
+                   '1. Open the Settings app\n' +
+                   '2. Scroll down and tap on your browser (Safari/Chrome)\n' +
+                   '3. Tap on "Microphone"\n' +
+                   '4. Toggle the switch to "Allow"\n' +
+                   '5. Return to the browser and refresh the page';
+          case 'android':
+            return 'Android Instructions:\n' +
+                   '1. Tap the lock icon in the address bar\n' +
+                   '2. Tap on "Site settings"\n' +
+                   '3. Find "Microphone"\n' +
+                   '4. Select "Allow"\n' +
+                   '5. Refresh the page';
+          default: // desktop
+            return 'Desktop Instructions:\n' +
+                   '1. Click the lock/site settings icon in the address bar\n' +
+                   '2. Find "Microphone" in the permissions list\n' +
+                   '3. Change it to "Allow"\n' +
+                   '4. Refresh the page';
+        }
+      },
+
+      async checkMicrophonePermission() {
+        try {
+          const permissionStatus = await navigator.permissions.query({ name: 'microphone' });
+          return permissionStatus.state;
+        } catch (error) {
+          console.error('Error checking microphone permission:', error);
+          return 'prompt'; // Default to prompt if we can't check
+        }
+      },
+
+      async forceOpenPermissionDialog() {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          stream.getTracks().forEach(track => track.stop());
+          return true;
+        } catch (error) {
+          return false;
+        }
+      },
+
+      async requestMicrophonePermission() {
+        try {
+          const permissionState = await this.checkMicrophonePermission();
+          
+          if (permissionState === 'denied') {
+            // Show device-specific instructions
+            const message = 'Microphone access is blocked.\n\n' + 
+                          this.getDeviceSpecificInstructions() + '\n\n' +
+                          'After enabling access in settings, click OK to try again.';
+            alert(message);
+            
+            // Try to force open the permission dialog again
+            return await this.forceOpenPermissionDialog();
+          }
+
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          // Stop the stream immediately as we only needed it for permission
+          stream.getTracks().forEach(track => track.stop());
+          console.log('Enforce Microphone permission granted');
+          return true;
+        } catch (error) {
+          if (error.name === 'NotAllowedError') {
+            const retry = confirm('Microphone access is required. Would you like to try again?');
+            if (retry) {
+              // Try to force open the permission dialog again
+              return await this.forceOpenPermissionDialog();
+            }
+          }
+          console.error('Microphone permission denied:', error);
+          return false;
+        }
+      },
+
       async startCall() {
         // Strict check: Don't allow new calls if one is in progress
         if (isCallingLive.value) {
           console.error('Cannot start a new call: A call is already in progress');
+          return;
+        }
+
+        // Request microphone permission first
+        const hasPermission = await methods.requestMicrophonePermission();
+        if (!hasPermission) {
+          console.error('Microphone permission is required to start the call');
+          resetCallState();
           return;
         }
 

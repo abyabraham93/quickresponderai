@@ -73,7 +73,7 @@ export default {
             /* wwFront:end */
              /* wwFront:start */
             brandingOptions: {
-                href: 'https://weweb.io',
+                href: 'https://go.weweb.io/preview',
                 target: '_blank',
                 style: 'position: fixed; bottom: 4px; right: 4px; background: rgb(38, 38, 38); color: white; padding: 10px 12px; font-size: 14px; border: 1px solid rgb(97, 97, 97); border-radius: 4px; cursor: pointer; font-weight: 500;',
             },

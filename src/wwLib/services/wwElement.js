@@ -73,6 +73,8 @@ export default {
      */
     useLink({ isDisabled, forcedLinkRef } = {}) {
         const componentState = inject('componentState', {});
+        const wwProps = inject('componentWwProps', {});
+
         const addInternalState = inject('wwAddInternalState', () => {});
         const removeInternalState = inject('wwRemoveInternalState', () => {});
         const sectionId = inject('sectionId');
@@ -82,7 +84,11 @@ export default {
         /* wwFront:end */
 
         const normalizedLink = computed(() => {
-            const rawLink = forcedLinkRef ? forcedLinkRef.value : componentState.link;
+            const rawLink = forcedLinkRef
+                ? forcedLinkRef.value
+                : wwProps.value.wwLink
+                ? wwProps.value.wwLink
+                : componentState.link;
 
             if (!rawLink || rawLink.type === 'none') {
                 return { type: 'none' };

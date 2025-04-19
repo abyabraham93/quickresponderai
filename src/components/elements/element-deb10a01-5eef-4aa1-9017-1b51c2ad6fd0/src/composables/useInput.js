@@ -6,6 +6,9 @@ export function useInput(props, emit) {
     const inputRef = ref(null);
     let debounceTimeout = null;
 
+    // New display value ref to decouple UI from actual value
+    const displayValue = ref('');
+
     const type = computed(() => {
         if (Object.keys(props.wwElementState.props).includes('type')) {
             return props.wwElementState.props.type;
@@ -15,28 +18,52 @@ export function useInput(props, emit) {
 
     function formatValue(value) {
         if (type.value !== 'decimal') return value;
-        if (!value && value !== 0) return '';
+        if (value === null || value === undefined || value === '') return '';
 
         // Convert to string and ensure decimal point is '.'
-        value = `${value}`.replace(',', '.');
+        const valueStr = `${value}`.replace(',', '.');
 
         // Determine decimal places from precision setting
-        // The precision is stored as "0.1", "0.01", etc.
-        // Count the zeros after the decimal point to get the precision
         const precisionStr = props.content.precision;
         const decimalPlaces = precisionStr.includes('.') ? precisionStr.split('.')[1].length : 0;
 
         // Format the number with fixed decimal places
-        // We need to return a string to preserve trailing zeros
-        return Number(value).toFixed(decimalPlaces);
+        return Number(valueStr).toFixed(decimalPlaces);
     }
 
-    const defaultValue = computed(() => (props.content.value === undefined ? '' : formatValue(props.content.value)));
+    // Convert string to appropriate type based on input type
+    function parseValue(value) {
+        if (value === '' || value === null || value === undefined) return '';
+
+        if (type.value === 'decimal' || type.value === 'number') {
+            return isNaN(parseFloat(value)) ? value : parseFloat(value);
+        }
+
+        return value;
+    }
+
+    const defaultValue = computed(() => {
+        const rawValue = props.content.value === undefined ? '' : props.content.value;
+        return type.value === 'decimal' || type.value === 'number' ? parseValue(rawValue) : rawValue;
+    });
+
     const { value: variableValue, setValue } = wwLib.wwVariable.useComponentVariable({
         uid: props.uid,
         name: 'value',
         defaultValue,
     });
+
+    // Initialize display value
+    watch(
+        variableValue,
+        newValue => {
+            // Only update display value if not focused, otherwise it will disrupt typing
+            if (!isReallyFocused.value) {
+                displayValue.value = type.value === 'decimal' ? formatValue(newValue) : String(newValue ?? '');
+            }
+        },
+        { immediate: true }
+    );
 
     /** wwEditor:start */
     watch(defaultValue, () => {
@@ -95,41 +122,55 @@ export function useInput(props, emit) {
     const delay = computed(() => wwLib.wwUtils.getLengthUnit(props.content.debounceDelay)[0]);
 
     function correctDecimalValue(event) {
-        if (type.value === 'decimal') {
-            const formattedValue = formatValue(variableValue.value);
-            if (formattedValue !== variableValue.value) {
-                setValue(formattedValue);
+        if (type.value === 'decimal' && displayValue.value !== '') {
+            const parsedValue = parseValue(displayValue.value);
+            const formattedDisplay = formatValue(parsedValue);
+
+            // Update the display value with proper formatting
+            displayValue.value = formattedDisplay;
+
+            // Always update the actual value to ensure it's in sync with formatted display
+            setValue(parseFloat(formattedDisplay));
+
+            // Only emit the event if the value actually changed
+            if (parsedValue !== variableValue.value) {
                 emit('trigger-event', {
                     name: 'change',
-                    event: { domEvent: event, value: parseFloat(formattedValue) },
+                    event: { domEvent: event, value: parsedValue },
                 });
             }
         }
     }
 
     function handleManualInput(event) {
-        const value = event.target.value;
-        let newValue;
+        const rawValue = event.target.value;
 
-        if (inputType.value === 'number' && (event.data === '.' || event.data === ',') && value === '') {
-            return;
-        } else if (inputType.value === 'number' && (value === 0 || (value && value.length))) {
+        // Update display value as user types
+        displayValue.value = rawValue;
+
+        // For decimal/number, only parse when sending events
+        let parsedValue;
+
+        if (inputType.value === 'number' && (rawValue === 0 || (rawValue && rawValue.length))) {
             try {
-                newValue = parseFloat(value);
+                parsedValue = parseFloat(rawValue);
+                if (isNaN(parsedValue)) {
+                    parsedValue = rawValue;
+                }
             } catch (error) {
-                newValue = value;
+                parsedValue = rawValue;
             }
         } else {
-            newValue = value;
+            parsedValue = rawValue;
         }
 
-        if (newValue === props.value) return;
-        setValue(newValue);
+        // Avoid updating if the value hasn't changed
+        if (parsedValue === variableValue.value) return;
 
-        const parsedValue =
-            (inputType.value === 'number' || inputType.value === 'decimal') && typeof newValue === 'string'
-                ? parseFloat(newValue)
-                : newValue;
+        // Update the actual value
+        setValue(parsedValue);
+
+        // Trigger events
         if (props.content.debounce) {
             isDebouncing.value = true;
             if (debounceTimeout) {
@@ -207,6 +248,7 @@ export function useInput(props, emit) {
     return {
         inputRef,
         variableValue,
+        displayValue,
         isReallyFocused,
         isDebouncing,
         type,

@@ -2,7 +2,7 @@ import { cloneDeep } from 'lodash';
 import { computed, onUnmounted, reactive, watch, onMounted, inject } from 'vue';
 import { checkVariableType } from '@/_common/helpers/updateVariable.js';
 import { getValue } from '@/_common/helpers/code/customCode.js';
-import set from 'lodash.set';
+import { set } from 'lodash';
 import { useVariablesStore } from '@/pinia/variables.js';
 import { escapeHTMLInObject } from '@/_common/helpers/htmlEscaper.js';
 

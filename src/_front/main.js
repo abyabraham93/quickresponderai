@@ -1,12 +1,7 @@
 import { createApp, createSSRApp } from 'vue';
 import axios from 'axios';
 import { VueCookieNext } from 'vue-cookie-next';
-import isEqual from 'lodash.isequal';
-import isEmpty from 'lodash.isempty';
-import cloneDeep from 'lodash.clonedeep';
-import get from 'lodash.get';
-import set from 'lodash.set';
-import merge from 'lodash.merge';
+import { isEqual, isEmpty, cloneDeep, get, set, merge } from 'lodash';
 
  
 /* wwFront:start */

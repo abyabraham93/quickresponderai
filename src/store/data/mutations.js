@@ -1,4 +1,4 @@
-import set from 'lodash.set';
+import { set } from 'lodash';
 import { markRaw, toRaw } from 'vue';
 
 export default {

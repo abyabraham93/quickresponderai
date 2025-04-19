@@ -1,4 +1,4 @@
-import { ref, readonly as setReadonly, computed, inject, unref } from 'vue';
+import { ref, readonly as setReadonly, computed, inject, unref, watch } from 'vue';
 import { checkVariableType } from '@/_common/helpers/updateVariable.js';
 import { cloneDeep } from 'lodash';
 import { useVariablesStore } from '@/pinia/variables.js';
@@ -37,8 +37,7 @@ export default {
             return value;
         } catch (error) {
             wwLib.wwLog.error(
-                `Unable to update variable ${
-                    variable ? `${variable.name} of type ${variable.type}` : ''
+                `Unable to update variable ${variable ? `${variable.name} of type ${variable.type}` : ''
                 } (${variableId}) : ${error.message} - got : `
             );
             wwLib.wwLog.error(value);
@@ -56,9 +55,10 @@ export default {
         type = 'any',
         readonly = false,
         resettable = false,
-        onUpdate = () => {},
+        onUpdate = () => { },
         labelOnly = null,
         preserveReference = false,
+        isActive = ref(true),
     }) {
         if (!uid) {
             wwLib.wwLog.error(`Missing uid for creating component variable ${name}`);
@@ -68,40 +68,54 @@ export default {
         const bindingContext = inject('bindingContext', null);
         const libraryContext = inject('_wwLibraryComponentContext', null);
         const isInsideRepeat = computed(() => bindingContext !== null);
-        const isInsideComponent = computed(() => libraryContext !== null);
+        const isInsideLibraryComponent = computed(() => libraryContext !== null);
         const sectionId = inject('sectionId');
         const variablesStore = useVariablesStore();
 
-        if (!isInsideRepeat.value) {
-            if (isInsideComponent.value) {
-                variableId.value = registerLibraryComponentVariable({
-                    uid,
-                    name,
-                    defaultValue,
-                    componentType,
-                    type,
-                    readonly,
-                    resettable,
-                    sectionId,
-                    labelOnly,
-                    libraryContext,
-                    preserveReference,
-                });
-            } else {
-                variableId.value = wwLib.wwVariable.registerComponentVariable({
-                    uid,
-                    name,
-                    defaultValue,
-                    componentType,
-                    type,
-                    readonly,
-                    resettable,
-                    sectionId,
-                    labelOnly,
-                    preserveReference,
-                });
-            }
-        }
+        watch(isActive,
+            (value) => {
+                if (value && !variableId.value) {
+                    if (!isInsideRepeat.value) {
+                        if (isInsideLibraryComponent.value) {
+                            variableId.value = registerLibraryComponentVariable({
+                                uid,
+                                name,
+                                defaultValue,
+                                componentType,
+                                type,
+                                readonly,
+                                resettable,
+                                sectionId,
+                                labelOnly,
+                                libraryContext,
+                                preserveReference,
+                            });
+                        } else {
+                            variableId.value = wwLib.wwVariable.registerComponentVariable({
+                                uid,
+                                name,
+                                defaultValue,
+                                componentType,
+                                type,
+                                readonly,
+                                resettable,
+                                sectionId,
+                                labelOnly,
+                                preserveReference,
+                            });
+                        }
+                    }
+                } else if (!value && variableId.value) {
+                    if (isInsideLibraryComponent.value) {
+                        unregisterLibraryComponentVariable({ variableId: variableId.value, libraryContext });
+                    } else {
+                        unregisterComponentVariable(variableId.value);
+                    }
+                    variableId.value = null;
+                }
+            },
+            { immediate: true }
+        );
 
         const wwElementState = inject('wwElementState');
         const propValue = computed(() => wwElementState.props[name]);
@@ -111,9 +125,9 @@ export default {
         const internalValue = ref(
             isInsideRepeat.value
                 ? unref(defaultValue)
-                : isInsideComponent.value
-                ? libraryContext?.component?.variables[variableId.value]
-                : variablesStore.values[variableId.value]
+                : isInsideLibraryComponent.value
+                    ? libraryContext?.component?.variables[variableId.value]
+                    : variablesStore.values[variableId.value]
         );
         const currentValue = computed(() => {
             if (hasPropValue.value) {
@@ -122,7 +136,7 @@ export default {
             if (isInsideRepeat.value) {
                 return internalValue.value;
             }
-            if (isInsideComponent.value) {
+            if (isInsideLibraryComponent.value) {
                 return libraryContext?.component?.variables[variableId.value];
             }
             return variablesStore.values[variableId.value];
@@ -137,7 +151,7 @@ export default {
             }
             if (!isInsideRepeat.value) {
                 let newValue;
-                if (isInsideComponent.value) {
+                if (isInsideLibraryComponent.value) {
                     newValue = libraryContext?.component?.methods?.updateVariable(variableId.value, value);
                 } else {
                     newValue = wwLib.wwVariable.updateValue(variableId.value, value);
@@ -189,6 +203,25 @@ export default {
         return id;
     },
     registerLibraryComponentVariable,
+    registerPluginVariable({ uid, name, defaultValue, type }) {
+        const variablesStore = useVariablesStore(wwLib.$pinia);
+        const id = `${uid}-${name}`;
+        variablesStore.add('plugin', id, {
+            pluginId: uid,
+            id,
+            name,
+            type,
+        });
+        variablesStore.values[id] = cloneDeep(unref(defaultValue));
+
+        return id;
+    },
+    unregisterPluginVariable(id) {
+        const variablesStore = useVariablesStore(wwLib.$pinia);
+        variablesStore.remove(id);
+    },
+    unregisterComponentVariable,
+    unregisterLibraryComponentVariable,
  };
 
 function registerLibraryComponentVariable({
@@ -224,4 +257,17 @@ function registerLibraryComponentVariable({
     libraryContext.component.variables[id] = useInitialValue ? initialValue : cloneDeep(unref(defaultValue));
 
     return id;
+}
+
+function unregisterLibraryComponentVariable({
+    id,
+    libraryContext
+}) {
+    delete libraryContext.component.componentVariablesConfiguration[id];
+    delete libraryContext.component.variables[id];
+}
+
+function unregisterComponentVariable(id) {
+    const variablesStore = useVariablesStore(wwLib.$pinia);
+    variablesStore.remove(id);
 }

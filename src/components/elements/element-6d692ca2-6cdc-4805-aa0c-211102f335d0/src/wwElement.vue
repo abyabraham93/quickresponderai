@@ -109,7 +109,7 @@ export default {
         },
         /* wwFront:end */
     },
-    beforeUnmounted() {
+    beforeUnmount() {
         /* wwFront:start */
         wwLib.getFrontWindow().removeEventListener('resize', this.reinit);
         /* wwFront:end */

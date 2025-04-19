@@ -18,7 +18,7 @@
         :class="{ editing: isEditing }"
         @input="handleManualInput"
         @focus="isReallyFocused = true"
-        @blur="isReallyFocused = false"
+        @blur="onBlur"
         @keyup.enter="onEnter"
     />
 </template>
@@ -32,7 +32,6 @@ export default {
         content: { type: Object, required: true },
         uid: { type: String, required: true },
         wwElementState: { type: Object, required: true },
-        useForm: { type: Boolean, default: true }, // TODO => Prevent specific component from using form
     },
     emits: [
         'element-event',
@@ -51,6 +50,7 @@ export default {
         const {
             inputRef,
             variableValue,
+            displayValue,
             isReallyFocused,
             isDebouncing,
             type,
@@ -84,7 +84,7 @@ export default {
         const inputBindings = computed(() => ({
             ...props.wwElementState.props.attributes,
             key: 'ww-input-basic-' + step.value,
-            value: variableValue.value,
+            value: displayValue.value,
             type: inputType.value,
             name: props.wwElementState.name,
             readonly: isReadonly.value || isEditing.value,
@@ -95,12 +95,11 @@ export default {
             min: min.value,
             max: max.value,
             step: stepAttribute.value,
-            'data-ksdjgflkfdgjlkdkfgjfdkljgklfdjglkfdjgklfdjglkfdjglkfdjglkfdjglkdf': variableValue.value,
         }));
 
         const textareaBindings = computed(() => ({
             ...props.wwElementState.props.attributes,
-            value: variableValue.value,
+            value: displayValue.value,
             type: props.content.type,
             name: props.wwElementState.name,
             readonly: isReadonly.value || isEditing.value,

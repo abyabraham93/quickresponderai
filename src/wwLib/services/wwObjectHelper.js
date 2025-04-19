@@ -5,8 +5,8 @@ export default class wwObjectHelper {
         return {
             'ww-text': 'd7904e9d-fc9a-4d80-9e32-728e097879ad',
             'ww-image': '3a7d6379-12d3-4387-98ff-b332bb492a63',
-            'ww-button': '6f8796b1-8273-498d-95fc-7013b7c63214',
-            'ww-icon': '83d890fb-84f9-4386-b459-fb4be89a8e15',
+            'ww-button': '59dca300-db78-42e4-a7a6-0cbf22d3cc82',
+            'ww-icon': '1b1e2173-9b78-42cc-a8ee-a6167caea340',
             'ww-checkbox': 'af811adf-94d9-49dd-ab22-e2f29ae30299',
             'ww-video': '1494761b-1d0c-4266-aba7-7f24f824978e',
             'ww-iframe': '6d692ca2-6cdc-4805-aa0c-211102f335d0',

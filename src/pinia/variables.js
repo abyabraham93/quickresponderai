@@ -1,6 +1,6 @@
 import { ref, shallowReactive, reactive, effectScope } from 'vue';
 import { defineStore } from 'pinia';
-import set from 'lodash.set';
+import { set } from 'lodash';
 import { computed } from 'vue';
 
 export const useVariablesStore = defineStore('variables', () => {

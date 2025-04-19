@@ -2,7 +2,7 @@ import { executeCode, getValue } from '@/_common/helpers/code/customCode.js';
 import { executeComponentAction } from '@/_common/use/useActions.js';
 import { detectInfinityLoop } from '@/_common/helpers/code/workflowsCallstack.js';
 import { getComponentLabel } from '@/_common/helpers/component/component.js';
-import set from 'lodash.set';
+import { set } from 'lodash';
 import { unref } from 'vue';
 import { useVariablesStore } from '@/pinia/variables.js';
 
@@ -513,10 +513,19 @@ export async function executeWorkflowAction(
                         ? context?.component?.componentVariablesConfiguration?.[`${fileVariable.componentUid}-progress`]
                         : variablesStore.components[`${fileVariable.componentUid}-progress`]
                     : null;
+
+                const statusVariable = isVariable
+                    ? isInternalVariable
+                        ? context?.component?.componentVariablesConfiguration?.[`${fileVariable.componentUid}-status`]
+                        : variablesStore.components[`${fileVariable.componentUid}-status`]
+                    : null;
+
                 const element = isVariable
                     ? wwLib.$store.getters['websiteData/getWwObjects'][fileVariable.componentUid] || {}
                     : null;
-                const isMultiple = isVariable ? element?.content?.default?.multiple : Array.isArray(actionValue);
+                const isMultiple = isVariable
+                    ? element?.content?.default?.multiple || statusVariable
+                    : Array.isArray(actionValue);
 
                 const updateProgressVariable = progress => {
                     if (!progressVariable) return;
@@ -527,35 +536,100 @@ export async function executeWorkflowAction(
                     }
                 };
 
+                const markAllFilesCompleted = () => {
+                    if (!statusVariable) return;
+
+                    const currentStatus = isInternalVariable
+                        ? context?.component?.variables[`${fileVariable.componentUid}-status`] || {}
+                        : variablesStore.values[statusVariable.id] || {};
+
+                    const updatedStatus = { ...currentStatus };
+                    for (const file of files) {
+                        if (file && file.name) {
+                            updatedStatus[file.name] = {
+                                uploadProgress: 100,
+                                isUploading: false,
+                                isUploaded: true,
+                            };
+                        }
+                    }
+
+                    if (isInternalVariable) {
+                        context?.component?.methods?.updateVariable(
+                            `${fileVariable.componentUid}-status`,
+                            updatedStatus
+                        );
+                    } else {
+                        variablesStore.setValue(statusVariable.id, updatedStatus);
+                    }
+                };
+
                 let progress = 0;
                 result = [];
 
                 const designId = wwLib.$store.getters['websiteData/getDesignInfo'].id;
                 const files = isMultiple ? actionValue : [actionValue];
+
                 for (const file of files) {
-                    if (!file) continue;
+                    if (!file || !file.name) continue;
+
                     const { data } = await axios.post(
                         `${wwLib.wwApiRequests._getApiUrl()}/designs/${designId}/user-files`,
                         {
                             name: file.name.replace(/[#!@$%^&*()+=\[\]{};':"\\|,<>\? \/]/g, '_'), // Replace problematic characters with underscores
-                            type: file.type,
+                            type: file.type || file.mimeType,
                             size: file.size,
                             tag: `${getValue(action.fileTag, context, { event, recursive: false }) || ''}`,
                         }
                     );
+
+                    const handleFileProgress = data => {
+                        const fileProgress = (data.loaded / data.total) * 100;
+                        const overallProgress = progress + fileProgress / files.length;
+
+                        updateProgressVariable(overallProgress);
+
+                        if (statusVariable) {
+                            const fileId = file.name;
+                            const currentStatus = isInternalVariable
+                                ? context?.component?.variables[`${fileVariable.componentUid}-status`] || {}
+                                : variablesStore.values[statusVariable.id] || {};
+
+                            const updatedStatus = {
+                                ...currentStatus,
+                                [fileId]: {
+                                    uploadProgress: fileProgress,
+                                    isUploading: fileProgress < 100,
+                                    isUploaded: fileProgress >= 100,
+                                },
+                            };
+
+                            if (isInternalVariable) {
+                                context?.component?.methods?.updateVariable(
+                                    `${fileVariable.componentUid}-status`,
+                                    updatedStatus
+                                );
+                            } else {
+                                variablesStore.setValue(statusVariable.id, updatedStatus);
+                            }
+                        }
+                    };
+
                     await axios.put(data.signedRequest, file, {
-                        headers: { Accept: '*/*', 'Content-Type': file.type },
+                        headers: { Accept: '*/*', 'Content-Type': file.type || file.mimeType },
                         skipAuthorization: true,
-                        onUploadProgress: data => {
-                            updateProgressVariable(progress + ((data.loaded / data.total) * 100) / files.length);
-                        },
+                        onUploadProgress: handleFileProgress,
                     });
+
                      result.push({ url: data.url, name: data.name, ext: data.ext, tag: data.tag, size: data.size });
                     progress += 100 / files.length;
                 }
                 if (!isMultiple) result = result[0];
 
                 updateProgressVariable(100);
+                markAllFilesCompleted();
+
+                logActionInformation('info', 'File upload completed', { preview: result });
                 break;
             }
             case 'execute-workflow': {
@@ -924,13 +998,23 @@ export async function executeWorkflowAction(
                 // Create a URL for the Blob object
                 const blobUrl = URL.createObjectURL(blob);
 
-                // Create a link element for downloading the file
-                const downloadLink = wwLib.getFrontDocument().createElement('a');
-                downloadLink.href = blobUrl;
-                downloadLink.download = getValue(action.fileName, context, { event }) || ''; // Set the desired file name
+                // Sanitize and validate the file name
+                let fileName = getValue(action.fileName, context, { event }) || '';
+                fileName = fileName.replace(/[^\w\s.-]/gi, '');
 
-                // Simulate a click on the link to trigger the download
-                downloadLink.click();
+                if (blobUrl.startsWith('blob:')) {
+                    // Create a link element for downloading the file
+                    const downloadLink = wwLib.getFrontDocument().createElement('a');
+
+                    // Set the download attributes with sanitized values
+                    downloadLink.href = blobUrl;
+                    downloadLink.download = fileName;
+
+                    // Simulate a click on the link to trigger the download
+                    downloadLink.click();
+                } else {
+                    throw new Error('Invalid blob URL');
+                }
 
                 // Clean up by revoking the Blob URL
                 URL.revokeObjectURL(blobUrl);
