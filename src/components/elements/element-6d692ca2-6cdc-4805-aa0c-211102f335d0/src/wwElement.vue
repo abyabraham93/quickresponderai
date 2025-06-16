@@ -96,7 +96,10 @@ export default {
         },
         executeJavascript() {
             if (window.__WW_IS_PRERENDER__) return;
-            this.scripts.filter(script => script.content).forEach(script => eval(script.content));
+            this.scripts.filter(script => script.content).forEach(script => {
+                const scriptFunction = new Function(script.content);
+                scriptFunction();
+            });
         },
         /* wwFront:start */
         reinit() {

@@ -5,11 +5,11 @@ import { useIconsStore } from '@/pinia/icons';
  /* wwFront:start */
 // eslint-disable-next-line no-undef
 import plugin_f5856798_485d_47be_b433_d43d771c64e1 from '@/components/plugins/plugin-f5856798-485d-47be-b433-d43d771c64e1/src/wwPlugin.js';
+import plugin_832d6f7a_42c3_43f1_a3ce_9a678272f811 from '@/components/plugins/plugin-832d6f7a-42c3-43f1-a3ce-9a678272f811/src/wwPlugin.js';
 import plugin_cd33cf33_e29f_4e8c_ac26_b997fe507ce7 from '@/components/plugins/plugin-cd33cf33-e29f-4e8c-ac26-b997fe507ce7/src/wwPlugin.js';
 import plugin_2bd1c688_31c5_443e_ae25_59aa5b6431fb from '@/components/plugins/plugin-2bd1c688-31c5-443e-ae25-59aa5b6431fb/src/wwPlugin.js';
 import plugin_36816525_6e0d_4217_b792_19f5d8682c46 from '@/components/plugins/plugin-36816525-6e0d-4217-b792-19f5d8682c46/src/wwPlugin.js';
 import plugin_fbf0feec_356b_461b_8738_3b1f44edaf02 from '@/components/plugins/plugin-fbf0feec-356b-461b-8738-3b1f44edaf02/src/wwPlugin.js';
-import plugin_832d6f7a_42c3_43f1_a3ce_9a678272f811 from '@/components/plugins/plugin-832d6f7a-42c3-43f1-a3ce-9a678272f811/src/wwPlugin.js';
 import plugin_9c40819b_4a8f_468f_9ba5_4b9699f3361f from '@/components/plugins/plugin-9c40819b-4a8f-468f-9ba5-4b9699f3361f/src/wwPlugin.js';
 /* wwFront:end */
 
@@ -53,11 +53,11 @@ export default {
         /* wwFront:start */
         // eslint-disable-next-line no-undef
         wwLib.wwPluginHelper.registerPlugin('plugin-f5856798-485d-47be-b433-d43d771c64e1', plugin_f5856798_485d_47be_b433_d43d771c64e1);
+wwLib.wwPluginHelper.registerPlugin('plugin-832d6f7a-42c3-43f1-a3ce-9a678272f811', plugin_832d6f7a_42c3_43f1_a3ce_9a678272f811);
 wwLib.wwPluginHelper.registerPlugin('plugin-cd33cf33-e29f-4e8c-ac26-b997fe507ce7', plugin_cd33cf33_e29f_4e8c_ac26_b997fe507ce7);
 wwLib.wwPluginHelper.registerPlugin('plugin-2bd1c688-31c5-443e-ae25-59aa5b6431fb', plugin_2bd1c688_31c5_443e_ae25_59aa5b6431fb);
 wwLib.wwPluginHelper.registerPlugin('plugin-36816525-6e0d-4217-b792-19f5d8682c46', plugin_36816525_6e0d_4217_b792_19f5d8682c46);
 wwLib.wwPluginHelper.registerPlugin('plugin-fbf0feec-356b-461b-8738-3b1f44edaf02', plugin_fbf0feec_356b_461b_8738_3b1f44edaf02);
-wwLib.wwPluginHelper.registerPlugin('plugin-832d6f7a-42c3-43f1-a3ce-9a678272f811', plugin_832d6f7a_42c3_43f1_a3ce_9a678272f811);
 wwLib.wwPluginHelper.registerPlugin('plugin-9c40819b-4a8f-468f-9ba5-4b9699f3361f', plugin_9c40819b_4a8f_468f_9ba5_4b9699f3361f);
         /* wwFront:end */
 
@@ -174,10 +174,11 @@ wwLib.wwPluginHelper.registerPlugin('plugin-9c40819b-4a8f-468f-9ba5-4b9699f3361f
         return wwLib.manager
             ? 'editor'
             : window.location.host.includes(
-                  '-staging.' + (process.env.WW_ENV === 'staging' ? process.env.VUE_APP_PREVIEW_URL : '')
+                  // TODO: add staging2 ?
+                  '-staging.' + (process.env.WW_ENV === 'staging' ? import.meta.env.VITE_APP_PREVIEW_URL : '')
               )
             ? 'staging'
-            : window.location.host.includes(process.env.VUE_APP_PREVIEW_URL)
+            : window.location.host.includes(import.meta.env.VITE_APP_PREVIEW_URL)
             ? 'preview'
             : 'production';
     },
